@@ -6,6 +6,7 @@
 //  Copyright © 2016年 devlpEiji. All rights reserved.
 import UIKit
 import SpriteKit
+import AVFoundation
 
 class ViewController: UIViewController {
     

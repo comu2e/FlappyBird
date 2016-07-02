@@ -14,6 +14,7 @@
 		251B2D2D1D24DD3000524B86 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 251B2D2B1D24DD3000524B86 /* LaunchScreen.storyboard */; };
 		251B2D351D24DD6700524B86 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 251B2D341D24DD6700524B86 /* SpriteKit.framework */; };
 		251B2D371D24DFB100524B86 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 251B2D361D24DFB100524B86 /* GameScene.swift */; };
+		25E7FD801D2796AD0056EA3B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25E7FD7F1D2796AD0056EA3B /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		251B2D2E1D24DD3000524B86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		251B2D341D24DD6700524B86 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
 		251B2D361D24DFB100524B86 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		25E7FD7F1D2796AD0056EA3B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25E7FD801D2796AD0056EA3B /* AVFoundation.framework in Frameworks */,
 				251B2D351D24DD6700524B86 /* SpriteKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -43,6 +46,7 @@
 		251B2D161D24DD2F00524B86 = {
 			isa = PBXGroup;
 			children = (
+				25E7FD7F1D2796AD0056EA3B /* AVFoundation.framework */,
 				251B2D341D24DD6700524B86 /* SpriteKit.framework */,
 				251B2D211D24DD2F00524B86 /* FlappyBird */,
 				251B2D201D24DD2F00524B86 /* Products */,
@@ -297,6 +301,7 @@
 				251B2D331D24DD3000524B86 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

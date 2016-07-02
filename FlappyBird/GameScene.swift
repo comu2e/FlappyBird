@@ -7,14 +7,15 @@
 //
 
 import SpriteKit
-
+import AVFoundation
 class GameScene: SKScene,SKPhysicsContactDelegate {
     
     var scrollNode:SKNode!
     var wallNode:SKNode!
-    var bird:SKSpriteNode!
     var coinNode:SKNode!
     
+    var bird:SKSpriteNode!
+
     
     
     let birdCategory: UInt32 = 1 << 0       // 0...00001
@@ -42,6 +43,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 
         scrollNode = SKNode()
         addChild(scrollNode)
+        
         wallNode = SKNode()
         addChild(wallNode)
         
@@ -54,7 +56,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         setupWall()
         setupBird()
         setupScoreLabel()
-        setupCoinSound()
         setupCoin()
 //
     }
@@ -74,7 +75,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 //    コインと衝突した時に呼び出されるメソッド
 
     func setupCoinSound(){
-        let music = SKAudioNode.init(fileNamed: "coin.wav")
+        let music = SKAudioNode.init(fileNamed: "coin.m4a")
         self.addChild(music)
     }
 //    コインのスプライト
@@ -96,17 +97,13 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     
         let createCoinAnimation = SKAction.runBlock({
         let coin = SKNode()
-        let sprite = SKSpriteNode(texture: coinTexture)
 
         coin.zPosition = -50
         coin.position = CGPoint(x: self.frame.size.width + coinTexture.size().width * 2, y: 0.0)
-        
-//        coin.physicsBody = SKPhysicsBody(rectangleOfSize: coinTexture.size())
-//        sprite.physicsBody?.categoryBitMask = CoinCategory // ←追加
+        coin.physicsBody?.categoryBitMask = self.CoinCategory
 
-        let center_x = self.frame.size.width / 2
+
         let random_x_range = self.frame.size.width / 4
-        let under_coin_lowest_x = UInt32(center_x  - coinTexture.size().width / 2 -  random_x_range / 2)
         let random_x = arc4random_uniform( UInt32(random_x_range) )
         let under_coin_x = CGFloat(random_x + 35)
 
@@ -118,16 +115,17 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
             
                     
-        let coin_position = SKSpriteNode(texture: coinTexture)
-        coin_position.position = CGPoint(x: under_coin_x , y: under_coin_y)
-        coin.addChild(coin_position)
-
+        let coinNode = SKSpriteNode(texture: coinTexture)
+        coinNode.position = CGPoint(x: under_coin_x , y: under_coin_y)
+        coinNode.physicsBody?.dynamic = false
+        coinNode.physicsBody?.categoryBitMask = self.CoinCategory
+        coinNode.physicsBody?.contactTestBitMask = self.birdCategory
+        coin.addChild(coinNode)
         coin.runAction(CoinAnimation)
 
         self.coinNode.addChild(coin)
 
         })
-        
         
         let waitAnimation = SKAction.waitForDuration(2)
 
@@ -179,18 +177,40 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             // スコア用の物体と衝突した
             print("ScoreUp")
             score += 1
-            scoreLabelNode.text = "Score:\(score)" // ←追加
-
-            // ベストスコア更新か確認する --- ここから ---
+            scoreLabelNode.text = "Score:\(score)"
+            // ベストスコア更新か確認する
             var bestScore = userDefaults.integerForKey("BEST")
             if score > bestScore {
                 bestScore = score
-                bestScoreLabelNode.text = "Best Score:\(bestScore)" // ←追加
+                bestScoreLabelNode.text = "Best Score:\(bestScore)"
 
                 userDefaults.setInteger(bestScore, forKey: "BEST")
                 userDefaults.synchronize()
-            } // --- ここまで追加---
-        } else {
+            }
+        }
+        
+        
+        else if (contact.bodyA.categoryBitMask & CoinCategory) == scoreCategory || (contact.bodyB.categoryBitMask & CoinCategory) == scoreCategory {
+            // スコア用の物体と衝突した
+            print("Coin")
+            score += 1
+            scoreLabelNode.text = "Score:\(score)"
+            
+            // ベストスコア更新か確認する
+            var bestScore = userDefaults.integerForKey("BEST")
+            if score > bestScore {
+                bestScore = score
+                bestScoreLabelNode.text = "Best Score:\(bestScore)"
+                
+                userDefaults.setInteger(bestScore, forKey: "BEST")
+                userDefaults.synchronize()
+            }
+        }
+            
+            
+        
+        
+        else {
             // 壁か地面と衝突した
             print("GameOver")
             
@@ -227,9 +247,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         bird.physicsBody?.allowsRotation = false
         
         // 衝突のカテゴリー設定
-        bird.physicsBody?.categoryBitMask = birdCategory // ←追加
-        bird.physicsBody?.collisionBitMask = groundCategory | wallCategory | CoinCategory // ←追加
-        bird.physicsBody?.contactTestBitMask = groundCategory | wallCategory | CoinCategory // ←追加
+        bird.physicsBody?.categoryBitMask = birdCategory
+        bird.physicsBody?.collisionBitMask = groundCategory | wallCategory
+        bird.physicsBody?.contactTestBitMask = groundCategory | wallCategory
+        
         
         // アニメーションを設定
         bird.runAction(flap)
@@ -270,7 +291,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             sprite.physicsBody = SKPhysicsBody(rectangleOfSize: groundTexture.size())
             
             // 衝突のカテゴリー設定
-            sprite.physicsBody?.categoryBitMask = groundCategory // ←追加
+            sprite.physicsBody?.categoryBitMask = groundCategory
             
             // 衝突の時に動かないように設定する
             sprite.physicsBody?.dynamic = false
@@ -358,7 +379,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             
             // スプライトに物理演算を設定する
             under.physicsBody = SKPhysicsBody(rectangleOfSize: wallTexture.size())
-            under.physicsBody?.categoryBitMask = self.wallCategory // ←追加
+            under.physicsBody?.categoryBitMask = self.wallCategory
             
             // 衝突の時に動かないように設定する
             under.physicsBody?.dynamic = false
@@ -382,6 +403,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             scoreNode.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: upper.size.width, height: self.frame.size.height))
             scoreNode.physicsBody?.dynamic = false
             scoreNode.physicsBody?.categoryBitMask = self.scoreCategory
+            
             scoreNode.physicsBody?.contactTestBitMask = self.birdCategory
             
             wall.addChild(scoreNode)
