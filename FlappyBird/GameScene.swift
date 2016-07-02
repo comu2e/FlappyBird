@@ -55,7 +55,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         setupBird()
         setupScoreLabel()
         setupCoin()
-        setupCoinSound()
 //
     }
     
@@ -74,7 +73,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 //    コインと衝突した時に呼び出されるメソッド
 
     func setupCoinSound(){
-        var sound = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
+        let sound = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
 
         // 再生アクション.
         runAction(sound)
@@ -202,11 +201,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         }
         
         
-        else if (contact.bodyA.categoryBitMask & CoinCategory) == CoinCategory || (contact.bodyB.categoryBitMask & CoinCategory) == CoinCategory {
+        if (contact.bodyA.categoryBitMask & CoinCategory) == CoinCategory || (contact.bodyB.categoryBitMask & CoinCategory) == CoinCategory {
             // スコア用の物体と衝突した
             print("Coin")
             score += 2
             scoreLabelNode.text = "Score:\(score)"
+            setupCoinSound()
             // ベストスコア更新か確認する
             var bestScore = userDefaults.integerForKey("BEST")
             if score > bestScore {
@@ -235,6 +235,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             })
         }
     }
+    
+    
     func setupBird() {
         // 鳥の画像を2種類読み込む
         let birdTextureA = SKTexture(imageNamed: "bird_a")
