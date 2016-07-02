@@ -188,7 +188,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                 userDefaults.synchronize()
             }
         }
-        
+          
         
         else if (contact.bodyA.categoryBitMask & CoinCategory) == scoreCategory || (contact.bodyB.categoryBitMask & CoinCategory) == scoreCategory {
             // スコア用の物体と衝突した
