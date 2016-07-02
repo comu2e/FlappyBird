@@ -22,10 +22,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     let groundCategory: UInt32 = 1 << 1     // 0...00010
     let wallCategory: UInt32 = 1 << 2       // 0...00100
     let scoreCategory: UInt32 = 1 << 3      // 0...01000
-    let CoinCategory:UInt32 = 1 << 4
-    let music:SKAudioNode! = nil
-    
-    
+    let CoinCategory:UInt32 = 1 << 4       // 0...10000
+
     // スコア
     var score = 0
     var scoreLabelNode:SKLabelNode! // ←追加
@@ -57,6 +55,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         setupBird()
         setupScoreLabel()
         setupCoin()
+        setupCoinSound()
 //
     }
     
@@ -75,8 +74,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 //    コインと衝突した時に呼び出されるメソッド
 
     func setupCoinSound(){
-        let music = SKAudioNode.init(fileNamed: "coin.m4a")
-        self.addChild(music)
+        var sound = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
+
+        // 再生アクション.
+        runAction(sound)
+        
     }
 //    コインのスプライト
     
@@ -95,11 +97,15 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 
         
     
-        let createCoinAnimation = SKAction.runBlock({
+        let createCoinAnimation = SKAction.runBlock(
+        {
+        
         let coin = SKNode()
 
         coin.zPosition = -50
         coin.position = CGPoint(x: self.frame.size.width + coinTexture.size().width * 2, y: 0.0)
+        
+  
         coin.physicsBody?.categoryBitMask = self.CoinCategory
 
 
@@ -116,6 +122,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             
                     
         let coinNode = SKSpriteNode(texture: coinTexture)
+        let coin_size = CGFloat(coinTexture.size().height / 2 )
+        coinNode.physicsBody = SKPhysicsBody(circleOfRadius:coin_size )
+
+            
         coinNode.position = CGPoint(x: under_coin_x , y: under_coin_y)
         coinNode.physicsBody?.dynamic = false
         coinNode.physicsBody?.categoryBitMask = self.CoinCategory
@@ -172,7 +182,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         if scrollNode.speed <= 0 {
             return
         }
-        
+//         (0100) == (0100)
+//        1111 (３桁が１の時と４桁の１がカテゴリ
+
         if (contact.bodyA.categoryBitMask & scoreCategory) == scoreCategory || (contact.bodyB.categoryBitMask & scoreCategory) == scoreCategory {
             // スコア用の物体と衝突した
             print("ScoreUp")
@@ -190,12 +202,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         }
         
         
-        else if (contact.bodyA.categoryBitMask & CoinCategory) == scoreCategory || (contact.bodyB.categoryBitMask & CoinCategory) == scoreCategory {
+        else if (contact.bodyA.categoryBitMask & CoinCategory) == CoinCategory || (contact.bodyB.categoryBitMask & CoinCategory) == CoinCategory {
             // スコア用の物体と衝突した
             print("Coin")
-            score += 1
+            score += 2
             scoreLabelNode.text = "Score:\(score)"
-            
             // ベストスコア更新か確認する
             var bestScore = userDefaults.integerForKey("BEST")
             if score > bestScore {
@@ -208,7 +219,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         }
             
             
-        
         
         else {
             // 壁か地面と衝突した
@@ -248,10 +258,13 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         
         // 衝突のカテゴリー設定
         bird.physicsBody?.categoryBitMask = birdCategory
-        bird.physicsBody?.collisionBitMask = groundCategory | wallCategory
-        bird.physicsBody?.contactTestBitMask = groundCategory | wallCategory
-        
-        
+//        birdがぶつかるカテゴリを設定するマスク？
+//        上は物理演算でぶつかるか
+//        下は接触したか 下をdidBeginContactがよびださる　オブジェクトがどこを遠たか取得できる <-透明なオブジェクト（通過したかどうか）
+        bird.physicsBody?.collisionBitMask = groundCategory | wallCategory | CoinCategory  //(0100||0010 -> 0110)
+        bird.physicsBody?.contactTestBitMask = groundCategory | wallCategory | CoinCategory  //(0100||0010 -> 0110)
+
+//        
         // アニメーションを設定
         bird.runAction(flap)
         
