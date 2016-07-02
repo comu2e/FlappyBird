@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "F188EAF6D7B5E82ABCA81D394C5A35F2E95EAA98",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "F188EAF6D7B5E82ABCA81D394C5A35F2E95EAA98" : 0,
+    "D67EA557505BB5782E9AFA671B4FA8DD89795458" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "EA7ACA1E-95DF-4200-ADB8-6FB8A55778AB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "F188EAF6D7B5E82ABCA81D394C5A35F2E95EAA98" : "FlappyBird\/",
+    "D67EA557505BB5782E9AFA671B4FA8DD89795458" : "..\/Desktop\/%E8%A7%A3%E6%9E%90"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "FlappyBird",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "FlappyBird.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/comu2e\/-.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D67EA557505BB5782E9AFA671B4FA8DD89795458"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/comu2e\/FlappyBird.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "F188EAF6D7B5E82ABCA81D394C5A35F2E95EAA98"
+    }
+  ]
+}
