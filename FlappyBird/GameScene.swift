@@ -26,8 +26,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 
     // スコア
     var score = 0
-    var scoreLabelNode:SKLabelNode! // ←追加
-    var bestScoreLabelNode:SKLabelNode! // ←追加
+    var coinScore = 0
+    var scoreLabelNode:SKLabelNode!
+    var coinscoreLabelNode:SKLabelNode!
+
+    var bestScoreLabelNode:SKLabelNode!
     let userDefaults:NSUserDefaults = NSUserDefaults.standardUserDefaults()
 
     
@@ -153,6 +156,18 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         scoreLabelNode.text = "Score:\(score)"
         self.addChild(scoreLabelNode)
         
+        coinScore = 0
+        coinscoreLabelNode = SKLabelNode()
+        coinscoreLabelNode.fontColor = UIColor.blackColor()
+        coinscoreLabelNode.position = CGPoint(x: 10, y: self.frame.size.height - 90)
+        coinscoreLabelNode.zPosition = 100 // 一番手前に表示する
+        coinscoreLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
+        coinscoreLabelNode.text = "CoinScore:\(coinScore)"
+        self.addChild(coinscoreLabelNode)
+        
+
+        
+        
         bestScoreLabelNode = SKLabelNode()
         bestScoreLabelNode.fontColor = UIColor.blackColor()
         bestScoreLabelNode.position = CGPoint(x: 10, y: self.frame.size.height - 60)
@@ -163,9 +178,14 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         bestScoreLabelNode.text = "Best Score:\(bestScore)"
         self.addChild(bestScoreLabelNode)
     }
+   
+
+    
     func restart() {
         score = 0
         scoreLabelNode.text = String("Score:\(score)") // ←追加
+        coinScore = 0
+        coinscoreLabelNode.text = String("CoinScore:\(coinScore)") // ←追加
         bird.position = CGPoint(x: self.frame.size.width * 0.2, y:self.frame.size.height * 0.7)
         bird.physicsBody?.velocity = CGVector.zero
         bird.physicsBody?.collisionBitMask = groundCategory | wallCategory
@@ -204,20 +224,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         if (contact.bodyA.categoryBitMask & CoinCategory) == CoinCategory || (contact.bodyB.categoryBitMask & CoinCategory) == CoinCategory {
             // スコア用の物体と衝突した
             print("Coin")
-            score += 1
-            scoreLabelNode.text = "Score:\(score)"
+            coinScore += 1
+            coinscoreLabelNode.text = "CoinScore:\(coinScore)"
             setupCoinSound()
-            // ベストスコア更新か確認する
-            var bestScore = userDefaults.integerForKey("BEST")
-            if score > bestScore {
-                bestScore = score
-                bestScoreLabelNode.text = "Best Score:\(bestScore)"
-                
-                userDefaults.setInteger(bestScore, forKey: "BEST")
-                userDefaults.synchronize()
-            }
         }
-            
+        
+
             
         
         else {
