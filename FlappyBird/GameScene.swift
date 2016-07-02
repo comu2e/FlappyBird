@@ -74,10 +74,13 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 //    コインと衝突した時に呼び出されるメソッド
 
     func setupCoinSound(){
-        let music = SKAudioNode(fileNamed: "coin.wav")
+        let music = SKAudioNode.init(fileNamed: "coin.wav")
         self.addChild(music)
     }
 //    コインのスプライト
+    
+
+    
     func setupCoin() {
         // コインの画像を読み込む
         let coinTexture = SKTexture(imageNamed: "coin_a")
@@ -94,14 +97,13 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         let createCoinAnimation = SKAction.runBlock({
         let coin = SKNode()
         let sprite = SKSpriteNode(texture: coinTexture)
-       
+
         coin.zPosition = -50
         coin.position = CGPoint(x: self.frame.size.width + coinTexture.size().width * 2, y: 0.0)
         
-        coin.physicsBody = SKPhysicsBody(rectangleOfSize: coinTexture.size())
-        sprite.physicsBody?.categoryBitMask = self.CoinCategory // ←追加
-//位置調整
-            
+//        coin.physicsBody = SKPhysicsBody(rectangleOfSize: coinTexture.size())
+//        sprite.physicsBody?.categoryBitMask = CoinCategory // ←追加
+
         let center_x = self.frame.size.width / 2
         let random_x_range = self.frame.size.width / 4
         let under_coin_lowest_x = UInt32(center_x  - coinTexture.size().width / 2 -  random_x_range / 2)
@@ -113,20 +115,17 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         let under_coin_lowest_y = UInt32(center_y + 30 - coinTexture.size().height / 2 -  random_y_range / 2)
         let random_y = arc4random_uniform( UInt32(random_y_range) )
         let under_coin_y = CGFloat(under_coin_lowest_y + random_y)
-                    
-        let coinNode = SKSpriteNode(texture: coinTexture)
-        coinNode.position = CGPoint(x: under_coin_x , y: under_coin_y)
-        coin.addChild(coinNode)
-
+        
             
-//アニメーション
+                    
+        let coin_position = SKSpriteNode(texture: coinTexture)
+        coin_position.position = CGPoint(x: under_coin_x , y: under_coin_y)
+        coin.addChild(coin_position)
+
         coin.runAction(CoinAnimation)
 
         self.coinNode.addChild(coin)
-//物理演算
-            coinNode.physicsBody?.dynamic = false
-            coinNode.physicsBody?.categoryBitMask = self.CoinCategory
-            coinNode.physicsBody?.contactTestBitMask = self.birdCategory
+
         })
         
         
@@ -176,40 +175,22 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             return
         }
         
-        if (contact.bodyA.categoryBitMask & scoreCategory) == scoreCategory || (contact.bodyB.categoryBitMask & scoreCategory) == scoreCategory{
+        if (contact.bodyA.categoryBitMask & scoreCategory) == scoreCategory || (contact.bodyB.categoryBitMask & scoreCategory) == scoreCategory {
             // スコア用の物体と衝突した
             print("ScoreUp")
             score += 1
-            scoreLabelNode.text = "Score:\(score)"
+            scoreLabelNode.text = "Score:\(score)" // ←追加
 
-            // ベストスコア更新か確認する
-            var bestScore = userDefaults.integerForKey("BEST")
-            if score > bestScore {
-                bestScore = score
-                bestScoreLabelNode.text = "Best Score:\(bestScore)"
-
-                userDefaults.setInteger(bestScore, forKey: "BEST")
-                userDefaults.synchronize()
-            }
-        }
-        else if (contact.bodyA.categoryBitMask & CoinCategory) == CoinCategory || (contact.bodyB.categoryBitMask & CoinCategory) == CoinCategory{
-            // スコア用の物体と衝突した
-            print("ScoreUp")
-            score += 1
-            scoreLabelNode.text = "Score:\(score)"
-            setupCoinSound()
             // ベストスコア更新か確認する --- ここから ---
             var bestScore = userDefaults.integerForKey("BEST")
             if score > bestScore {
                 bestScore = score
-                bestScoreLabelNode.text = "Best Score:\(bestScore)"
-                
+                bestScoreLabelNode.text = "Best Score:\(bestScore)" // ←追加
+
                 userDefaults.setInteger(bestScore, forKey: "BEST")
                 userDefaults.synchronize()
             } // --- ここまで追加---
-        }
-        
-        else {
+        } else {
             // 壁か地面と衝突した
             print("GameOver")
             
@@ -402,7 +383,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             scoreNode.physicsBody?.dynamic = false
             scoreNode.physicsBody?.categoryBitMask = self.scoreCategory
             scoreNode.physicsBody?.contactTestBitMask = self.birdCategory
-
+            
             wall.addChild(scoreNode)
             // --- ここまで追加 ---
             
