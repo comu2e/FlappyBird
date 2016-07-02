@@ -13,10 +13,17 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var scrollNode:SKNode!
     var wallNode:SKNode!
     var bird:SKSpriteNode!
+    var coinNode:SKNode!
+    
+    
+    
     let birdCategory: UInt32 = 1 << 0       // 0...00001
     let groundCategory: UInt32 = 1 << 1     // 0...00010
     let wallCategory: UInt32 = 1 << 2       // 0...00100
     let scoreCategory: UInt32 = 1 << 3      // 0...01000
+    let CoinCategory:UInt32 = 1 << 4
+    let music:SKAudioNode! = nil
+    
     
     // スコア
     var score = 0
@@ -24,6 +31,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var bestScoreLabelNode:SKLabelNode! // ←追加
     let userDefaults:NSUserDefaults = NSUserDefaults.standardUserDefaults()
 
+    
     
     
     override func didMoveToView(view: SKView) {
@@ -37,12 +45,17 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         wallNode = SKNode()
         addChild(wallNode)
         
+        coinNode = SKNode()
+        addChild(coinNode)
+        
         
         setupGround()
         setupCloud()
         setupWall()
         setupBird()
         setupScoreLabel()
+        setupCoinSound()
+        setupCoin()
 //
     }
     
@@ -53,10 +66,76 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             
             // 鳥に縦方向の力を与える
             bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 15))
-        } else if bird.speed == 0 { // --- ここから ---
+        } else if bird.speed == 0 {
             restart()
-        } // --- ここまで追加 ---
+        }
     }
+    
+//    コインと衝突した時に呼び出されるメソッド
+
+    func setupCoinSound(){
+        let music = SKAudioNode.init(fileNamed: "coin.wav")
+        self.addChild(music)
+    }
+//    コインのスプライト
+    
+
+    
+    func setupCoin() {
+        // コインの画像を読み込む
+        let coinTexture = SKTexture(imageNamed: "coin_a")
+        coinTexture.filteringMode = SKTextureFilteringMode.Nearest
+        let movingDistance = CGFloat(self.frame.size.width + coinTexture.size().width * 2)
+        let moveCoin = SKAction.moveByX(-movingDistance, y: 0, duration:4.0)
+        let removeCoin = SKAction.removeFromParent()
+        
+        // 2つのアニメーションを順に実行するアクションを作成
+        let CoinAnimation = SKAction.sequence([moveCoin, removeCoin])
+
+        
+    
+        let createCoinAnimation = SKAction.runBlock({
+        let coin = SKNode()
+        let sprite = SKSpriteNode(texture: coinTexture)
+
+        coin.zPosition = -50
+        coin.position = CGPoint(x: self.frame.size.width + coinTexture.size().width * 2, y: 0.0)
+        
+//        coin.physicsBody = SKPhysicsBody(rectangleOfSize: coinTexture.size())
+//        sprite.physicsBody?.categoryBitMask = CoinCategory // ←追加
+
+        let center_x = self.frame.size.width / 2
+        let random_x_range = self.frame.size.width / 4
+        let under_coin_lowest_x = UInt32(center_x  - coinTexture.size().width / 2 -  random_x_range / 2)
+        let random_x = arc4random_uniform( UInt32(random_x_range) )
+        let under_coin_x = CGFloat(random_x + 35)
+
+        let center_y = self.frame.size.height / 2
+        let random_y_range = self.frame.size.height / 4
+        let under_coin_lowest_y = UInt32(center_y + 30 - coinTexture.size().height / 2 -  random_y_range / 2)
+        let random_y = arc4random_uniform( UInt32(random_y_range) )
+        let under_coin_y = CGFloat(under_coin_lowest_y + random_y)
+        
+            
+                    
+        let coin_position = SKSpriteNode(texture: coinTexture)
+        coin_position.position = CGPoint(x: under_coin_x , y: under_coin_y)
+        coin.addChild(coin_position)
+
+        coin.runAction(CoinAnimation)
+
+        self.coinNode.addChild(coin)
+
+        })
+        
+        
+        let waitAnimation = SKAction.waitForDuration(2)
+
+        let repeatForeverAnimation = SKAction.repeatActionForever(SKAction.sequence([createCoinAnimation, waitAnimation]))
+
+        runAction(repeatForeverAnimation)
+    }
+
     func setupScoreLabel() {
         score = 0
         scoreLabelNode = SKLabelNode()
