@@ -204,7 +204,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         if (contact.bodyA.categoryBitMask & CoinCategory) == CoinCategory || (contact.bodyB.categoryBitMask & CoinCategory) == CoinCategory {
             // スコア用の物体と衝突した
             print("Coin")
-            score += 2
+            score += 1
             scoreLabelNode.text = "Score:\(score)"
             setupCoinSound()
             // ベストスコア更新か確認する
