@@ -46,11 +46,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         addChild(scrollNode)
         
         wallNode = SKNode()
-        addChild(wallNode)
-        
+        scrollNode.addChild(wallNode)
         coinNode = SKNode()
-        addChild(coinNode)
-        
+        scrollNode.addChild(coinNode)
         
         setupGround()
         setupCloud()
@@ -219,9 +217,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         }else if (contact.bodyA.categoryBitMask & CoinCategory) == CoinCategory || (contact.bodyB.categoryBitMask & CoinCategory) == CoinCategory {
             // スコア用の物体と衝突した
             print("Coin")
+            contact.bodyB.node!.removeFromParent() 
             coinScore += 1
             coinscoreLabelNode.text = "CoinScore:\(coinScore)"
             setupCoinSound()
+            
+            
         }else {
             // 壁か地面と衝突した
             print("GameOver")
@@ -427,7 +428,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             // --- ここまで追加 ---
             
             wall.runAction(wallAnimation)
-            
             self.wallNode.addChild(wall)
         })
         
