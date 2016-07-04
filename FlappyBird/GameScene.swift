@@ -29,7 +29,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var coinScore = 0
     var scoreLabelNode:SKLabelNode!
     var coinscoreLabelNode:SKLabelNode!
-
+    let sound = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
     var bestScoreLabelNode:SKLabelNode!
     let userDefaults:NSUserDefaults = NSUserDefaults.standardUserDefaults()
 
@@ -120,7 +120,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
                     
             let coinNode = SKSpriteNode(texture: coinTexture)
             let coin_size = CGFloat(coinTexture.size().height / 2 )
-        coinNode.physicsBody = SKPhysicsBody(circleOfRadius:coin_size )
+            coinNode.physicsBody = SKPhysicsBody(circleOfRadius:coin_size )
 
             
             coinNode.position = CGPoint(x: under_coin_x , y: under_coin_y)
@@ -219,8 +219,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             print("Coin")
             contact.bodyB.node!.removeFromParent() 
             coinScore += 1
+            score += 1
             coinscoreLabelNode.text = "CoinScore:\(coinScore)"
-            setupCoinSound()
+            scoreLabelNode.text = "Score:\(score)"
+            runAction(sound)
             
             
         }else {
