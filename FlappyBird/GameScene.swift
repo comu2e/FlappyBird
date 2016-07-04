@@ -34,7 +34,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 
     
     
-    
     override func didMoveToView(view: SKView) {
         // 背景色を設定
         backgroundColor = UIColor(colorLiteralRed: 0.15, green: 0.75, blue: 0.90, alpha: 1)
@@ -72,13 +71,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     
 //    コインと衝突した時に呼び出されるメソッド
 
-    func setupCoinSound(){
-        let sound = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
-
-        // 再生アクション.
-        runAction(sound)
-        
-    }
+ 
+    
 //    コインのスプライト
     
 
@@ -221,7 +215,8 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             score += 1
             coinscoreLabelNode.text = "CoinScore:\(coinScore)"
             scoreLabelNode.text = "Score:\(score)"
-            runAction(sound)
+//           音追加
+            runAction(self.sound)
             
             
         }else {
